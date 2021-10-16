@@ -1,0 +1,27 @@
+﻿<Window x:Class="BililiveNotification.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="直播提醒" SizeToContent="WidthAndHeight">
+    <DockPanel>
+        <StackPanel DockPanel.Dock="Right" Margin="5">
+            <Button Content="添加房间" Click="AddRoom_Click"/>
+            <Button Content="移除房间" Margin="0,5,0,0" Click="RemoveRoom_Click"/>
+            <Button Content="启用" Margin="0,5,0,0" Click="StartMonitor_Click" />
+            <Button Content="禁用" Margin="0,5,0,0" Click="StopMonitor_Click"/>
+            <Button Content="置为正在直播" Margin="0,5,0,0" Click="SetLiveStart_Click"/>
+            <Button Content="置为未在直播" Margin="0,5,0,0" Click="SetLiveEnd_Click"/>
+            <Button Content="测试通知效果" Margin="0,5,0,0" Click="PopToast_Click"/>
+        </StackPanel>
+        <DataGrid x:Name="MonitorDG" IsReadOnly="True" CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeColumns="False" CanUserReorderColumns="False" CanUserResizeRows="False" AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="房间号" Binding="{Binding RoomId}"/>
+                <DataGridTextColumn Header="工作状态" Binding="{Binding StatusDisplay}"/>
+                <DataGridTextColumn Header="连接状态" Binding="{Binding ConnectionStatusDisplay}"/>
+                <DataGridTextColumn Header="直播状态" Binding="{Binding LiveStatusDisplay}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+</Window>
