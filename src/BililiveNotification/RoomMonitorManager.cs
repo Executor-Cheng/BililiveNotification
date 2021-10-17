@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Executorlibs.Bilibili.Protocol.Options;
 using Microsoft.Extensions.Options;
+using Executorlibs.Bilibili.Protocol.Clients;
 
 namespace BililiveNotification
 {
@@ -42,6 +43,7 @@ namespace BililiveNotification
         {
             if (_roomScopes.TryGetValue(monitor.RoomId, out IServiceScope? scope))
             {
+                scope.ServiceProvider.GetRequiredService<IDanmakuClient>().Dispose();
                 scope.Dispose();
             }
             RoomMonitors.Remove(monitor);
