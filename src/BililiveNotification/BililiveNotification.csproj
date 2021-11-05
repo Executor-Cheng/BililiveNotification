@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
@@ -15,15 +15,17 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net6.0-windows10.0.17763.0'">
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0-rc.2.21480.5" />
-    <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0-rc.2.21480.5" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0-rc.2.21480.5" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0-rc.2.*" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0-rc.2.*" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0-rc.2.*" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.0-rc.2.*" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net5.0-windows10.0.17763.0' or '$(TargetFramework)' == 'netframework461-windows10.0.17763.0'">
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.2" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>

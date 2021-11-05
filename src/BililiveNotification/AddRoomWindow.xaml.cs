@@ -1,4 +1,4 @@
-﻿using BililiveNotification.Apis;
+using BililiveNotification.Apis;
 using System;
 using System.ComponentModel;
 using System.Windows;
@@ -34,7 +34,7 @@ namespace BililiveNotification
                 try
                 {
                     roomId = await BiliApis.GetRealRoomIdAsync(roomId, default);
-                    await _manager.AddMonitorAsync(roomId);
+                    await _manager.AddMonitorAsync(roomId, true);
                     this.RoomIdBox.Text = null;
                     this.Hide();
                 }

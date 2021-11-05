@@ -1,17 +1,25 @@
-﻿using Executorlibs.Bilibili.Protocol.Builders;
-using Executorlibs.Bilibili.Protocol.Clients;
+using BililiveNotification.Configs;
+using Executorlibs.Bilibili.Protocol.Builders;
 using Executorlibs.Bilibili.Protocol.Invokers;
 using Executorlibs.Bilibili.Protocol.Parsers;
 using Executorlibs.Bilibili.Protocol.Services;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Toolkit.Uwp.Notifications;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Windows;
 using System.Windows.Forms;
 using Button = System.Windows.Controls.Button;
 using MessageBox = System.Windows.MessageBox;
+#if NET5_0_OR_GREATER
+using TcpDanmakuClient = Executorlibs.Bilibili.Protocol.Clients.TcpDanmakuClientV3;
+#else
+using TcpDanmakuClient = Executorlibs.Bilibili.Protocol.Clients.TcpDanmakuClientV2;
+#endif
 
 namespace BililiveNotification
 {
@@ -26,29 +34,32 @@ namespace BililiveNotification
 
         private readonly RoomMonitorManager? _monitorManager;
 
+        private readonly ConfigManager? _configManager;
+
+        private readonly IHost? _host;
+
         public MainWindow()
         {
             ToastNotificationManagerCompat.OnActivated += ToastNotificationManagerCompat_OnActivated;
             if (!ToastNotificationManagerCompat.WasCurrentProcessToastActivated())
             {
                 InitializeComponent();
-                _services = new ServiceCollection()
-                                .AddLogging()
+                IHostBuilder hb = Host.CreateDefaultBuilder()
+                    .ConfigureServices((context, services) =>
+                    {
+                        services.AddLogging()
                                 .AddBilibiliDanmakuFramework()
                                 .AddCredentialProvider<DanmakuServerProvider>()
                                 .AddParser<LiveStartParser>()
                                 .AddParser<LiveEndParser>()
                                 .AddInvoker<BilibiliMessageHandlerInvoker>()
-#if NET5_0_OR_GREATER
-                                .AddClient<TcpDanmakuClientV3>()
-#else
-                                .AddClient<TcpDanmakuClientV2>()
-#endif
+                                .AddClient<TcpDanmakuClient>()
                                 .AddHandler(services => services.GetRequiredService<RoomMonitor>())
                                 .Services
                                 .AddSingleton<AddRoomWindow>()
                                 .AddSingleton<RoomMonitorManager>()
                                 .AddSingleton<NotifyIcon>()
+                                .AddSingleton<ConfigManager>()
                                 .AddScoped<RoomMonitor>()
                                 .AddHttpClient(Microsoft.Extensions.Options.Options.DefaultName, client =>
                                 {
@@ -56,9 +67,22 @@ namespace BililiveNotification
                                     client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36 Edg/93.0.961.38");
                                 })
                                 .Services
-                                .BuildServiceProvider();
+                                .AddHostedService(services => services.GetRequiredService<RoomMonitorManager>())
+                                .AddHostedService(services => services.GetRequiredService<ConfigManager>())
+                                .AddOptions<MainConfig>()
+                                .BindConfiguration("")
+                                .PostConfigure(config => config.RoomIds ??= new HashSet<int>());
+                    })
+                    .ConfigureAppConfiguration(config =>
+                    {
+                        config.AddJsonFile("./MainConfig.json", true, false);
+                    });
+                _host = hb.Build();
+                _host.Start();
+                _services = _host.Services;
                 _addRoomWindow = _services.GetRequiredService<AddRoomWindow>();
                 _monitorManager = _services.GetRequiredService<RoomMonitorManager>();
+                _configManager = _services.GetRequiredService<ConfigManager>();
                 this.MonitorDG.ItemsSource = _monitorManager.RoomMonitors;
                 this.Closing += MainWindow_Closing;
                 this.StateChanged += MainWindow_StateChanged;
@@ -95,11 +119,19 @@ namespace BililiveNotification
             }
         }
 
-        private void MainWindow_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
+        private async void MainWindow_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
         {
             if (MessageBox.Show("确认退出？", this.Title, MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
-                ((IDisposable)_services!).Dispose();
+                try
+                {
+                    await _host!.StopAsync();
+                    _host.Dispose();
+                }
+                catch
+                {
+
+                }
                 return;
             }
             e.Cancel = true;
@@ -195,6 +227,29 @@ namespace BililiveNotification
                 }
                 btn.IsEnabled = true;
             }
+        }
+
+        private void OpenRoom_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.MonitorDG.SelectedItem is RoomMonitor monitor)
+            {
+                Process.Start($"https://live.bilibili.com/{monitor.RoomId}").Dispose();
+            }
+        }
+
+        private void Save_Click(object sender, RoutedEventArgs e)
+        {
+            Button btn = (Button)sender;
+            btn.IsEnabled = false;
+            try
+            {
+                _configManager!.Save();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"无法保存配置: {ex}", this.Title, 0, MessageBoxImage.Error);
+            }
+            btn.IsEnabled = true;
         }
     }
 }
