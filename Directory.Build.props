@@ -1,15 +1,15 @@
 <Project>
-    <PropertyGroup>
-        <TargetFrameworks>net6.0-windows10.0.17763.0;net5.0-windows10.0.17763.0;netframework461-windows10.0.17763.0</TargetFrameworks>
-        <LangVersion>9.0</LangVersion>
-        <Nullable>enable</Nullable>
-		    <UseWPF>true</UseWPF>
-		    <UseWindowsForms>true</UseWindowsForms>
-        <DisableImplicitNamespaceImports>true</DisableImplicitNamespaceImports>
+  <PropertyGroup>
+    <TargetFrameworks>net7.0-windows10.0.17763.0;net6.0-windows10.0.17763.0;net5.0-windows10.0.17763.0;netframework461-windows10.0.17763.0</TargetFrameworks>
+    <LangVersion>9.0</LangVersion>
+    <Nullable>enable</Nullable>
+      <UseWPF>true</UseWPF>
+      <UseWindowsForms>true</UseWindowsForms>
+    <DisableImplicitNamespaceImports>true</DisableImplicitNamespaceImports>
     
-        <Version>1.0.2.0</Version>
-        <AssemblyVersion>1.0.2.0</AssemblyVersion>
-        <FileVersion>1.0.2.0</FileVersion>
-        <PackageVersion>1.0.2.0</PackageVersion>
-    </PropertyGroup>
+    <Version>1.0.3.0</Version>
+    <AssemblyVersion>1.0.3.0</AssemblyVersion>
+    <FileVersion>1.0.3.0</FileVersion>
+    <PackageVersion>1.0.3.0</PackageVersion>
+  </PropertyGroup>
 </Project>
