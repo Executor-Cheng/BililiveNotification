@@ -1,4 +1,4 @@
-﻿using BililiveNotification.Models;
+using BililiveNotification.Models;
 using Executorlibs.Shared.Exceptions;
 using Executorlibs.Shared.Extensions;
 using System;
@@ -13,18 +13,18 @@ namespace BililiveNotification.Apis
     {
         public static async Task<UserInfo> GetUserInfoAsync(HttpClient client, int userId, CancellationToken token = default)
         {
-            HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, $"https://api.bilibili.com/x/space/acc/info?mid={userId}&jsonp=jsonp");
+            HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, $"https://api.bilibili.com/x/web-interface/card?mid={userId}");
             req.Headers.Accept.ParseAdd("*/*");
-            req.Headers.Add("Origin", "https://live.bilibili.com");
-            req.Headers.Referrer = new Uri("https://live.bilibili.com/");
-            using JsonDocument j = await client.SendAsync(req, HttpCompletionOption.ResponseHeadersRead, token).GetJsonAsync(token);
+            req.Headers.Add("Origin", "https://www.bilibili.com");
+            req.Headers.Referrer = new Uri("https://www.bilibili.com/");
+            using JsonDocument j = await client.SendAsync(req, token).GetJsonAsync(token);
             JsonElement root = j.RootElement;
             if (root.GetProperty("code").GetInt32() != 0)
             {
                 throw new UnknownResponseException(in root);
             }
-            JsonElement data = root.GetProperty("data");
-            return new UserInfo(data.GetProperty("name").GetString()!, userId, data.GetProperty("face").GetString()!);
+            JsonElement card = root.GetProperty("data").GetProperty("card");
+            return new UserInfo(card.GetProperty("name").GetString()!, userId, card.GetProperty("face").GetString()!);
         }
     }
 }
