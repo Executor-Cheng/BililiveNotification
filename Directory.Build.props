@@ -7,9 +7,9 @@
       <UseWindowsForms>true</UseWindowsForms>
     <DisableImplicitNamespaceImports>true</DisableImplicitNamespaceImports>
     
-    <Version>1.0.4.0</Version>
-    <AssemblyVersion>1.0.4.0</AssemblyVersion>
-    <FileVersion>1.0.4.0</FileVersion>
-    <PackageVersion>1.0.4.0</PackageVersion>
+    <Version>1.0.5.0</Version>
+    <AssemblyVersion>1.0.5.0</AssemblyVersion>
+    <FileVersion>1.0.5.0</FileVersion>
+    <PackageVersion>1.0.5.0</PackageVersion>
   </PropertyGroup>
 </Project>

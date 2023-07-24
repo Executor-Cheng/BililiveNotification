@@ -1,4 +1,4 @@
-﻿using BililiveNotification.Apis;
+using BililiveNotification.Apis;
 using BililiveNotification.Models;
 using Executorlibs.Bilibili.Protocol.Clients;
 using Executorlibs.Bilibili.Protocol.Handlers;
@@ -40,6 +40,8 @@ namespace BililiveNotification
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
+        private string? _masterName;
+
         private DateTime _lastTime;
 
         private bool _status;
@@ -64,6 +66,19 @@ namespace BililiveNotification
             {
                 _lastTime = value ? DateTime.Now : default;
                 OnPropertyChanged(nameof(LiveStatusDisplay));
+            }
+        }
+
+        public string? MasterName
+        {
+            get => _masterName;
+            set
+            {
+                if (_masterName != value)
+                {
+                    _masterName = value;
+                    OnPropertyChanged();
+                }
             }
         }
 
@@ -158,6 +173,15 @@ namespace BililiveNotification
             {
                 _lastTime = time.Value;
                 OnPropertyChanged(nameof(LiveStatusDisplay));
+            }
+            try
+            {
+                var roomInfo = await BiliApis.GetRoomInfoAsync(_httpClient, RoomId);
+                MasterName = roomInfo.UserName;
+            }
+            catch (Exception)
+            {
+                MasterName = "<获取失败>";
             }
             await StartAsync();
         }
