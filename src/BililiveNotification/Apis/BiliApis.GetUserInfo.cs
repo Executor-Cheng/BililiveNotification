@@ -11,7 +11,7 @@ namespace BililiveNotification.Apis
 {
     public static partial class BiliApis
     {
-        public static async Task<UserInfo> GetUserInfoAsync(HttpClient client, int userId, CancellationToken token = default)
+        public static async Task<UserInfo> GetUserInfoAsync(HttpClient client, long userId, CancellationToken token = default)
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, $"https://api.bilibili.com/x/web-interface/card?mid={userId}");
             req.Headers.Accept.ParseAdd("*/*");

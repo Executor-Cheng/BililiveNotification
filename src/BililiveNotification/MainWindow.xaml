@@ -19,6 +19,7 @@
         </StackPanel>
         <DataGrid x:Name="MonitorDG" IsReadOnly="True" CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeColumns="False" CanUserReorderColumns="False" CanUserResizeRows="False" AutoGenerateColumns="False">
             <DataGrid.Columns>
+                <DataGridTextColumn Header="主播名" Binding="{Binding MasterName}"/>
                 <DataGridTextColumn Header="房间号" Binding="{Binding RoomId}"/>
                 <DataGridTextColumn Header="工作状态" Binding="{Binding StatusDisplay}"/>
                 <DataGridTextColumn Header="连接状态" Binding="{Binding ConnectionStatusDisplay}"/>

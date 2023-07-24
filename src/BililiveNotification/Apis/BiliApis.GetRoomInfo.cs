@@ -1,4 +1,4 @@
-﻿using BililiveNotification.Models;
+using BililiveNotification.Models;
 using Executorlibs.Shared.Exceptions;
 using Executorlibs.Shared.Extensions;
 using System;
@@ -24,7 +24,7 @@ namespace BililiveNotification.Apis
                 throw new UnknownResponseException(in root);
             }
             JsonElement data = root.GetProperty("data");
-            int userId = data.GetProperty("uid").GetInt32();
+            long userId = data.GetProperty("uid").GetInt64();
             UserInfo userInfo = await GetUserInfoAsync(client, userId, token);
             string? cover = data.GetProperty("user_cover").GetString();
             if (cover == "")
