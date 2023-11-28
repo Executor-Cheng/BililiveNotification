@@ -1,3 +1,4 @@
+using BililiveNotification.Clients;
 using BililiveNotification.Configs;
 using Executorlibs.Bilibili.Protocol.Builders;
 using Executorlibs.Bilibili.Protocol.Invokers;
@@ -15,11 +16,6 @@ using System.Windows;
 using System.Windows.Forms;
 using Button = System.Windows.Controls.Button;
 using MessageBox = System.Windows.MessageBox;
-#if NET5_0_OR_GREATER
-using TcpDanmakuClient = Executorlibs.Bilibili.Protocol.Clients.TcpDanmakuClientV3;
-#else
-using TcpDanmakuClient = Executorlibs.Bilibili.Protocol.Clients.TcpDanmakuClientV2;
-#endif
 
 namespace BililiveNotification
 {
@@ -53,7 +49,7 @@ namespace BililiveNotification
                                 .AddParser<LiveStartParser>()
                                 .AddParser<LiveEndParser>()
                                 .AddInvoker<BilibiliMessageHandlerInvoker>()
-                                .AddClient<TcpDanmakuClient>()
+                                .AddClient<AnonymousDanmakuClient>()
                                 .AddHandler(services => services.GetRequiredService<RoomMonitor>())
                                 .Services
                                 .AddSingleton<AddRoomWindow>()
